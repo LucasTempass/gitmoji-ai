@@ -32,6 +32,11 @@
                 displayName="Gitmoji: With AI Suggestions"
                 parentId="tools"
         />
+
+        <notificationGroup
+                id="gitmoji.ai.notification.general"
+                displayType="BALLOON"
+        />
     </extensions>
 
     <actions>
