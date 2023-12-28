@@ -78,9 +78,9 @@ class GitmojiColoredListCellRenderer : ColoredListCellRenderer<Gitmoji>() {
         list: JList<out Gitmoji>, value: Gitmoji, index: Int, selected: Boolean, hasFocus: Boolean
     ) {
         append(value.value, SimpleTextAttributes.REGULAR_ATTRIBUTES)
-        appendTextPadding(8)
+        append(" ", SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
         append(value.code, SimpleTextAttributes.GRAY_ITALIC_ATTRIBUTES)
-        appendTextPadding(8)
+        append(" - ", SimpleTextAttributes.GRAYED_SMALL_ATTRIBUTES)
         append(value.description, SimpleTextAttributes.REGULAR_ATTRIBUTES)
         applySpeedSearchHighlighting(list, this, true, selected)
     }
