@@ -1,9 +1,15 @@
 package com.cerveira.lucas.gitmoji.data
 
-class Gitmoji(val value: String, val code: String, val description: String, name: String)
+class Gitmoji(
+    val value: String,
+    val code: String,
+    val description: String,
+    val name: String,
+    val embedding: List<Double> = listOf()
+)
 
-val gitmojis = listOf(
-    Gitmoji("✨", ":sparkles:", "Introduce new features.", "sparkles"),
+val gitmojis: List<Gitmoji> = listOf(
+    Gitmoji("✨", ":sparkles:", "Introduce new features.", "sparkles", listOf(0.0)),
     Gitmoji("🐛", ":bug:", "Fix a bug.", "bug"),
     Gitmoji("🎨", ":art:", "Improve structure/format of the code.", "art"),
     Gitmoji("💄", ":lipstick:", "Add or update the UI and style files.", "lipstick"),
