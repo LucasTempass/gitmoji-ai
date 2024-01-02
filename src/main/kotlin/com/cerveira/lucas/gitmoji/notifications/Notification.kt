@@ -16,3 +16,15 @@ fun sendNotification(gitmoji: Gitmoji, project: Project? = null) {
 
     intellijNotification.notify(project)
 }
+
+fun sendNotification(message: String, project: Project? = null) {
+
+    val notificationManager =
+        NotificationGroupManager.getInstance().getNotificationGroup("gitmoji.ai.notification.general")
+
+    val intellijNotification = notificationManager.createNotification(
+        "Random Gitmoji", message, NotificationType.INFORMATION
+    )
+
+    intellijNotification.notify(project)
+}
