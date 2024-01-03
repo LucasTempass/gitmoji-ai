@@ -1,5 +1,7 @@
 package com.cerveira.lucas.gitmoji.data
 
+import com.google.gson.Gson
+
 class Gitmoji(
     val value: String,
     val code: String,
@@ -82,9 +84,34 @@ val gitmojis: List<Gitmoji> = listOf(
     Gitmoji("🧵", ":thread:", "Add or update code related to multithreading or concurrency.", "thread"),
     Gitmoji("🦺", ":safety_vest:", "Add or update code related to validation.", "safety-vest"),
     Gitmoji(
-        "🛂",
-        ":passport_control:",
-        "Work on code related to authorization, roles and permissions.",
-        "passport-control"
+        "🛂", ":passport_control:", "Work on code related to authorization, roles and permissions.", "passport-control"
     )
 )
+
+
+class Gitmojis {
+
+    var gitmojis: List<Gitmoji> = listOf()
+
+    data class GitmojiData(
+        val gitmojis: List<Gitmoji>
+    )
+
+    init {
+        loadDefaultGitmoji();
+    }
+
+    private fun loadDefaultGitmoji() {
+        javaClass.getResourceAsStream("/data/gitmojis.json").use { inputStream ->
+            if (inputStream != null) {
+                val text = inputStream.bufferedReader().readText()
+                gitmojis = run {
+                    val data = Gson().fromJson(text, GitmojiData::class.java)
+                    data.gitmojis
+                }
+            }
+        }
+    }
+
+}
+

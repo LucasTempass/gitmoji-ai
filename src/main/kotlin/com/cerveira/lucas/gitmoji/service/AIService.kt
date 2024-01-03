@@ -6,7 +6,7 @@ import com.aallam.openai.client.OpenAI
 import com.aallam.openai.client.OpenAIConfig
 import com.aallam.openai.client.OpenAIHost
 import com.cerveira.lucas.gitmoji.data.Gitmoji
-import com.cerveira.lucas.gitmoji.data.gitmojis
+import com.cerveira.lucas.gitmoji.data.Gitmojis
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.Service
 import kotlin.math.pow
@@ -14,6 +14,8 @@ import kotlin.math.sqrt
 
 @Service(Service.Level.APP)
 public class AIService {
+
+    val data: Gitmojis = Gitmojis()
 
     companion object {
         val instance: AIService
@@ -31,9 +33,10 @@ public class AIService {
 
         val response = openAI.embeddings(request)
 
-        val messageEmbedding = response.embeddings.first().embedding
 
-        val suggestedGitmoji: Gitmoji = gitmojis.maxBy {
+        val messageEmbedding = response.embeddings[0].embedding
+
+        val suggestedGitmoji: Gitmoji = data.gitmojis.maxBy {
             calculateCosineSimilarity(
                 messageEmbedding,
                 it.embedding

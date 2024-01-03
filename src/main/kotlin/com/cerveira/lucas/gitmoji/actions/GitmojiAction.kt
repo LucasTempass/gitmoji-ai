@@ -1,7 +1,6 @@
 package com.cerveira.lucas.gitmoji.actions
 
 import com.cerveira.lucas.gitmoji.data.Gitmoji
-import com.cerveira.lucas.gitmoji.data.gitmojis
 import com.cerveira.lucas.gitmoji.notifications.sendNotification
 import com.cerveira.lucas.gitmoji.service.AIService
 import com.intellij.openapi.actionSystem.AnAction
@@ -15,12 +14,9 @@ import com.intellij.openapi.vcs.VcsDataKeys
 import com.intellij.openapi.vcs.ui.CommitMessage
 import com.intellij.ui.ColoredListCellRenderer
 import com.intellij.ui.SimpleTextAttributes
-import com.intellij.ui.awt.RelativePoint
 import com.intellij.ui.speedSearch.SpeedSearchUtil.applySpeedSearchHighlighting
-import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import java.awt.Point
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
@@ -37,11 +33,13 @@ class GitmojiAction : AnAction() {
 
         val commitMessage = data as CommitMessage
 
-        createPopup(commitMessage, gitmojis, project).show(
-            RelativePoint(
-                commitMessage.editorField, Point(0, JBUI.scale(16))
-            )
-        )
+        fetchSuggestedEmoji(project, commitMessage)
+
+//        createPopup(commitMessage, gitmojis, project).show(
+//            RelativePoint(
+//                commitMessage.editorField, Point(0, JBUI.scale(16))
+//            )
+//        )
     }
 
     private fun createPopup(
@@ -78,7 +76,7 @@ class GitmojiAction : AnAction() {
                     // TODO implement this
                     sendNotification(generatedEmoji, project)
                 } catch (e: Exception) {
-                    sendNotification(e.message ?: "Unknown error", project)
+                    sendNotification(e.toString(), project)
                 }
             }
         }
