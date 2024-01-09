@@ -23,7 +23,7 @@ public class AIService {
 
     }
 
-    suspend fun generateSuggestedEmoji(message: String): String {
+    suspend fun generateSuggestedEmoji(message: String): List<Gitmoji> {
         val openAI = OpenAI(getConfiguration())
 
         val request = EmbeddingRequest(
@@ -36,14 +36,11 @@ public class AIService {
 
         val messageEmbedding = response.embeddings[0].embedding
 
-        val suggestedGitmoji: Gitmoji = data.gitmojis.maxBy {
-            calculateCosineSimilarity(
-                messageEmbedding,
-                it.embedding
-            )
-        }
+        val suggestedGitmojis: List<Gitmoji> = data.gitmojis.sortedBy {
+            calculateCosineSimilarity(it.embedding, messageEmbedding)
+        }.reversed()
 
-        return suggestedGitmoji.value;
+        return suggestedGitmojis.take(5)
     }
 
     private fun calculateCosineSimilarity(

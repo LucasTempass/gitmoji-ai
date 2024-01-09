@@ -8,7 +8,13 @@ class Gitmoji(
     val description: String,
     val name: String,
     val embedding: List<Double> = listOf()
-)
+) {
+
+    override fun toString(): String {
+        return "$value: $description"
+    }
+
+}
 
 val gitmojis: List<Gitmoji> = listOf(
     Gitmoji("✨", ":sparkles:", "Introduce new features.", "sparkles", listOf(0.0)),

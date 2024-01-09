@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.colors.EditorFontType
 import com.intellij.openapi.progress.runBackgroundableTask
+import com.intellij.openapi.progress.runModalTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
@@ -14,9 +15,12 @@ import com.intellij.openapi.vcs.VcsDataKeys
 import com.intellij.openapi.vcs.ui.CommitMessage
 import com.intellij.ui.ColoredListCellRenderer
 import com.intellij.ui.SimpleTextAttributes
+import com.intellij.ui.awt.RelativePoint
 import com.intellij.ui.speedSearch.SpeedSearchUtil.applySpeedSearchHighlighting
+import com.intellij.util.ui.JBUI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import java.awt.Point
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.StringSelection
@@ -35,11 +39,19 @@ class GitmojiAction : AnAction() {
 
         fetchSuggestedEmoji(project, commitMessage)
 
-//        createPopup(commitMessage, gitmojis, project).show(
-//            RelativePoint(
-//                commitMessage.editorField, Point(0, JBUI.scale(16))
-//            )
-//        )
+//        createEmojiSelector(commitMessage, project, gitmojis)
+    }
+
+    private fun createEmojiSelector(
+        commitMessage: CommitMessage,
+        project: Project,
+        gitmojisOptions: List<Gitmoji>
+    ) {
+        createPopup(commitMessage, gitmojisOptions, project).show(
+            RelativePoint(
+                commitMessage.editorField, Point(0, JBUI.scale(16))
+            )
+        )
     }
 
     private fun createPopup(
@@ -64,21 +76,24 @@ class GitmojiAction : AnAction() {
         project: Project,
         commitMessage: CommitMessage
     ) {
-        runBackgroundableTask("Generating emoji suggestion", project) {
+        runModalTask("Generating emoji suggestion", project) {
             val openAIService = AIService.instance
 
-            runBlocking<Unit>(Dispatchers.IO) {
+            val suggestedEmojis = runBlocking(Dispatchers.IO) {
                 try {
-                    val generatedEmoji = openAIService.generateSuggestedEmoji(
+                    val generatedEmojis = openAIService.generateSuggestedEmoji(
                         "Suggested emoji for commit message: ${commitMessage.text}"
                     )
 
-                    // TODO implement this
-                    sendNotification(generatedEmoji, project)
+                    return@runBlocking generatedEmojis;
                 } catch (e: Exception) {
-                    sendNotification(e.toString(), project)
+                    e.printStackTrace()
+                    sendNotification(e.message.toString(), project)
+                    return@runBlocking emptyList()
                 }
             }
+
+            createEmojiSelector(commitMessage, project, suggestedEmojis)
         }
     }
 
