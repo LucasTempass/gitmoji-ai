@@ -22,7 +22,7 @@ class EmojiSelectorPopup {
         ) {
             createPopup(commitMessage, gitmojisOptions).show(
                 RelativePoint(
-                    commitMessage.editorField, Point(0, JBUI.scale(16))
+                    commitMessage.editorField, Point(0, JBUI.scale(8))
                 )
             )
         }
@@ -34,7 +34,7 @@ class EmojiSelectorPopup {
 
             val builder = JBPopupFactory.getInstance().createPopupChooserBuilder(gitmojis).setFont(font)
                 .setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
-                .setVisibleRowCount(5)
+                .setVisibleRowCount(7)
                 .setItemChosenCallback(::onChoose)
                 .setRenderer(GitmojiColoredListCellRenderer())
                 .setNamerForFiltering { "${it.code} ${it.description}" }
