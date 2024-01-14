@@ -23,8 +23,12 @@ class AIService {
 
     }
 
-    suspend fun generateSuggestedEmoji(message: String): List<Gitmoji> {
-        val openAI = OpenAI(getConfiguration())
+    suspend fun generateSuggestedEmoji(message: String, token: String?): List<Gitmoji> {
+        if (token.isNullOrEmpty()) {
+            throw IllegalStateException("An OpenAI API token is required to use this plugin.")
+        }
+
+        val openAI = OpenAI(getConfiguration(token))
 
         val request = EmbeddingRequest(
             ModelId("text-embedding-ada-002"),
@@ -60,9 +64,9 @@ class AIService {
     }
 
 
-    private fun getConfiguration(): OpenAIConfig {
+    private fun getConfiguration(token: String): OpenAIConfig {
         return OpenAIConfig(
-            token = "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",
+            token = token,
             host = OpenAIHost.OpenAI,
         )
     }
