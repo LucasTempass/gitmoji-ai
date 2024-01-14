@@ -13,7 +13,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 @Service(Service.Level.APP)
-public class AIService {
+class AIService {
 
     val data: Gitmojis = Gitmojis()
 
@@ -32,7 +32,6 @@ public class AIService {
         )
 
         val response = openAI.embeddings(request)
-
 
         val messageEmbedding = response.embeddings[0].embedding
 

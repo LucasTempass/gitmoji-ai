@@ -44,7 +44,7 @@
                 id="GitmojiAI.Button"
                 text="Gitmoji: With AI Suggestions"
                 description="Select a gitmoji and get a commit message suggestion"
-                class="com.cerveira.lucas.gitmoji.actions.GitmojiAction"
+                class="com.cerveira.lucas.gitmoji.actions.GitmojiAIAction"
                 icon="/icons/gitmoji.svg"
         >
             <add-to-group group-id="Vcs.MessageActionGroup" anchor="last"/>
