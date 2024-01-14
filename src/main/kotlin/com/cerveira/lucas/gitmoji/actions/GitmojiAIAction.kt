@@ -5,9 +5,11 @@ import com.cerveira.lucas.gitmoji.data.Gitmoji
 import com.cerveira.lucas.gitmoji.notifications.sendErrorNotification
 import com.cerveira.lucas.gitmoji.service.AIService
 import com.cerveira.lucas.gitmoji.ui.EmojiSelectorPopup.Companion.displayEmojiSelectorPopup
+import com.intellij.ide.HelpTooltip
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.impl.ActionButton
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.progress.runModalTask
 import com.intellij.openapi.project.Project
@@ -20,18 +22,35 @@ import kotlinx.coroutines.runBlocking
 class GitmojiAIAction : AnAction() {
 
     override fun getActionUpdateThread(): ActionUpdateThread {
-        return ActionUpdateThread.EDT
+        return ActionUpdateThread.BGT
     }
 
     override fun update(e: AnActionEvent) {
         val project = e.project
 
-        val commitMessage = getCommitMessage(e)
+        val token = getToken(e)
 
-        val isCommitMessageEmpty: Boolean = commitMessage?.text?.isEmpty() ?: true
+        val isTokenInvalid = token.isNullOrEmpty()
 
+        val isCommitMessageEmpty: Boolean = getCommitMessage(e)?.text?.isEmpty() ?: true
+
+        e.presentation.isEnabled = !isCommitMessageEmpty && !isTokenInvalid
         e.presentation.isVisible = project != null
-        e.presentation.isEnabled = !isCommitMessageEmpty
+
+        val tooltip = HelpTooltip()
+
+        val description = if (isTokenInvalid) {
+            "Configure your OpenAI API key in the settings to get emoji suggestions for your commit message"
+        } else if (isCommitMessageEmpty) {
+            "Write a commit message to get AI generated emoji suggestions"
+        } else {
+            "Get AI generated emoji suggestions for your commit message"
+        }
+
+        e.presentation.putClientProperty(ActionButton.CUSTOM_HELP_TOOLTIP, tooltip.apply {
+            setTitle("Generate Gitmoji suggestions")
+            setDescription(description)
+        })
     }
 
     override fun actionPerformed(event: AnActionEvent) {
@@ -43,8 +62,7 @@ class GitmojiAIAction : AnAction() {
     }
 
     private fun displaySuggestedEmojis(
-        project: Project,
-        commitMessage: CommitMessage
+        project: Project, commitMessage: CommitMessage
     ) {
         runModalTask(
             "Generating Emoji Suggestions", project
@@ -54,8 +72,7 @@ class GitmojiAIAction : AnAction() {
             val suggestedEmojis: List<Gitmoji>? = runBlocking(Dispatchers.IO) {
                 try {
                     val generatedEmojis = openAIService.generateSuggestedEmoji(
-                        commitMessage.text,
-                        "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"
+                        commitMessage.text, "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"
                     )
 
                     return@runBlocking generatedEmojis;
@@ -68,9 +85,7 @@ class GitmojiAIAction : AnAction() {
                     // exceptions related to misconfiguration of the plugin
                     if (e is IllegalStateException) {
                         sendErrorNotification(
-                            "OpenAI API key not found",
-                            "Please add your OpenAI API key in the settings",
-                            project
+                            "OpenAI API key not found", "Please add your OpenAI API key in the settings", project
                         )
 
                         return@runBlocking null;
@@ -113,6 +128,11 @@ class GitmojiAIAction : AnAction() {
 
     private fun getCommitMessage(event: AnActionEvent) =
         event.getData(VcsDataKeys.COMMIT_MESSAGE_CONTROL) as CommitMessage?
+
+    private fun getToken(event: AnActionEvent): String? {
+        // TODO get token from settings
+        return "fake-token"
+    }
 
 }
 
