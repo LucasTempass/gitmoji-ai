@@ -5,6 +5,7 @@ import com.cerveira.lucas.gitmoji.data.Gitmoji
 import com.cerveira.lucas.gitmoji.notifications.sendErrorNotification
 import com.cerveira.lucas.gitmoji.service.AIService
 import com.cerveira.lucas.gitmoji.ui.EmojiSelectorPopup.Companion.displayEmojiSelectorPopup
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.application.ApplicationManager
@@ -18,12 +19,27 @@ import kotlinx.coroutines.runBlocking
 
 class GitmojiAIAction : AnAction() {
 
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.EDT
+    }
+
+    override fun update(e: AnActionEvent) {
+        val project = e.project
+
+        val commitMessage = getCommitMessage(e)
+
+        val isCommitMessageEmpty: Boolean = commitMessage?.text?.isEmpty() ?: true
+
+        e.presentation.isVisible = project != null
+        e.presentation.isEnabled = !isCommitMessageEmpty
+    }
+
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
 
-        val data = event.getData(VcsDataKeys.COMMIT_MESSAGE_CONTROL) ?: return
+        val data = getCommitMessage(event) ?: return
 
-        displaySuggestedEmojis(project, data as CommitMessage)
+        displaySuggestedEmojis(project, data)
     }
 
     private fun displaySuggestedEmojis(
@@ -94,6 +110,9 @@ class GitmojiAIAction : AnAction() {
             )
         }
     }
+
+    private fun getCommitMessage(event: AnActionEvent) =
+        event.getData(VcsDataKeys.COMMIT_MESSAGE_CONTROL) as CommitMessage?
 
 }
 
