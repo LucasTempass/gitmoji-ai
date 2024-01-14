@@ -28,7 +28,7 @@ class GitmojiAIAction : AnAction() {
     override fun update(e: AnActionEvent) {
         val project = e.project
 
-        val token = getToken(e)
+        val token = getToken()
 
         val isTokenInvalid = token.isNullOrEmpty()
 
@@ -72,7 +72,7 @@ class GitmojiAIAction : AnAction() {
             val suggestedEmojis: List<Gitmoji>? = runBlocking(Dispatchers.IO) {
                 try {
                     val generatedEmojis = openAIService.generateSuggestedEmoji(
-                        commitMessage.text, "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"
+                        commitMessage.text, getToken()
                     )
 
                     return@runBlocking generatedEmojis;
@@ -82,19 +82,10 @@ class GitmojiAIAction : AnAction() {
                         return@runBlocking null;
                     }
 
-                    // exceptions related to misconfiguration of the plugin
-                    if (e is IllegalStateException) {
-                        sendErrorNotification(
-                            "OpenAI API key not found", "Please add your OpenAI API key in the settings", project
-                        )
-
-                        return@runBlocking null;
-                    }
-
                     // generic exception handling
                     sendErrorNotification(
                         "There was an error generating the suggested emojis",
-                        "",
+                        "Please try again later or report the issue on GitHub.",
                         project,
                     )
 
@@ -114,13 +105,33 @@ class GitmojiAIAction : AnAction() {
 
     private fun handleOpenAIAPIException(e: OpenAIAPIException, project: Project) {
         when (e.statusCode) {
-            401 -> sendErrorNotification("Invalid OpenAI API key", "", project)
-            404 -> sendErrorNotification("OpenAI API not found", "", project)
-            429 -> sendErrorNotification("OpenAI API rate limit exceeded", "", project)
-            500 -> sendErrorNotification("OpenAI API internal server error", "", project)
-            503 -> sendErrorNotification("OpenAI API service unavailable", "", project)
+            401 -> sendErrorNotification(
+                "There was an error generating the suggested emojis",
+                "Update your OpenAI API key in the settings or check if it is properly configured.",
+                project
+            )
+
+            429 -> sendErrorNotification(
+                "There was an error generating the suggested emojis",
+                "The OpenAI API rate limit was exceeded, try again later or check your account settings.",
+                project
+            )
+
+            500 -> sendErrorNotification(
+                "There was an error generating the suggested emojis",
+                "The OpenAI API returned an internal server error, try again later or check your commit message.",
+                project
+            )
+
+            503 -> sendErrorNotification(
+                "OpenAI API service unavailable",
+                "The OpenAI API maybe unavailable, try again later.",
+                project
+            )
+
             else -> sendErrorNotification(
-                "There was an error generating the suggested emojis", "",
+                "There was an error generating the suggested emojis",
+                "Please try again later or check your internet connection.",
                 project,
             )
         }
@@ -129,9 +140,9 @@ class GitmojiAIAction : AnAction() {
     private fun getCommitMessage(event: AnActionEvent) =
         event.getData(VcsDataKeys.COMMIT_MESSAGE_CONTROL) as CommitMessage?
 
-    private fun getToken(event: AnActionEvent): String? {
+    private fun getToken(): String? {
         // TODO get token from settings
-        return "fake-token"
+        return "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"
     }
 
 }
