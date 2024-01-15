@@ -7,10 +7,11 @@ import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(
-    name = AppSettings.SERVICE_NAME,
-    storages = [Storage("GitmojiAI.xml")]
+    name = AppSettings.SERVICE_NAME, storages = [Storage("GitmojiAI.xml")]
 )
 class AppSettings : PersistentStateComponent<AppSettings> {
+
+    private var openAIToken: String? = null
 
     companion object {
 
@@ -25,6 +26,14 @@ class AppSettings : PersistentStateComponent<AppSettings> {
 
     override fun loadState(state: AppSettings) {
         XmlSerializerUtil.copyBean(state, this)
+    }
+
+    fun setToken(token: String?) {
+        openAIToken = token
+    }
+
+    fun getToken(): String? {
+        return openAIToken
     }
 
 }

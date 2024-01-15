@@ -4,6 +4,7 @@ import com.aallam.openai.api.exception.OpenAIAPIException
 import com.cerveira.lucas.gitmoji.data.Gitmoji
 import com.cerveira.lucas.gitmoji.notifications.sendErrorNotification
 import com.cerveira.lucas.gitmoji.service.AIService
+import com.cerveira.lucas.gitmoji.settings.AppSettings
 import com.cerveira.lucas.gitmoji.ui.EmojiSelectorPopup.Companion.displayEmojiSelectorPopup
 import com.intellij.ide.HelpTooltip
 import com.intellij.openapi.actionSystem.ActionUpdateThread
@@ -28,7 +29,7 @@ class GitmojiAIAction : AnAction() {
     override fun update(e: AnActionEvent) {
         val project = e.project
 
-        val token = getToken()
+        val token = AppSettings.instance.getToken()
 
         val isTokenInvalid = token.isNullOrEmpty()
 
@@ -72,7 +73,7 @@ class GitmojiAIAction : AnAction() {
             val suggestedEmojis: List<Gitmoji>? = runBlocking(Dispatchers.IO) {
                 try {
                     val generatedEmojis = openAIService.generateSuggestedEmoji(
-                        commitMessage.text, getToken()
+                        commitMessage.text, AppSettings.instance.getToken()
                     )
 
                     return@runBlocking generatedEmojis;
@@ -139,11 +140,6 @@ class GitmojiAIAction : AnAction() {
 
     private fun getCommitMessage(event: AnActionEvent) =
         event.getData(VcsDataKeys.COMMIT_MESSAGE_CONTROL) as CommitMessage?
-
-    private fun getToken(): String? {
-        // TODO get token from settings
-        return "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"
-    }
 
 }
 

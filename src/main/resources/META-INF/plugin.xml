@@ -29,7 +29,7 @@
 
         <applicationConfigurable
                 instance="com.cerveira.lucas.gitmoji.settings.AppSettingsConfigurable"
-                displayName="Gitmoji: With AI Suggestions"
+                displayName="Gitmoji AI"
                 parentId="tools"
         />
 
