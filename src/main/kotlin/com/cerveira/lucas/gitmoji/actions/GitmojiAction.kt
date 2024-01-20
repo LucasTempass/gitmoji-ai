@@ -18,9 +18,11 @@ class GitmojiAction : AnAction() {
     }
 
     override fun actionPerformed(event: AnActionEvent) {
+        val project = event.project ?: return
+
         val commitMessage = event.getData(VcsDataKeys.COMMIT_MESSAGE_CONTROL) ?: return
 
-        displayEmojiSelectorPopup(commitMessage as CommitMessage, gitmojis)
+        displayEmojiSelectorPopup(commitMessage as CommitMessage, gitmojis, project)
     }
 
     override fun update(e: AnActionEvent) {
@@ -35,7 +37,6 @@ class GitmojiAction : AnAction() {
             setDescription("Select an emoji from the Gitmoji specification to add to your commit message")
         })
     }
-
 
 }
 

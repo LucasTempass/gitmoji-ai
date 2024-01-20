@@ -76,11 +76,11 @@ class GitmojiAIAction : AnAction() {
                         commitMessage.text, AppSettings.instance.getToken()
                     )
 
-                    return@runBlocking generatedEmojis;
+                    return@runBlocking generatedEmojis
                 } catch (e: Exception) {
                     if (e is OpenAIAPIException) {
                         handleOpenAIAPIException(e, project)
-                        return@runBlocking null;
+                        return@runBlocking null
                     }
 
                     // generic exception handling
@@ -99,7 +99,7 @@ class GitmojiAIAction : AnAction() {
             }
 
             ApplicationManager.getApplication().invokeLater {
-                displayEmojiSelectorPopup(commitMessage, suggestedEmojis)
+                displayEmojiSelectorPopup(commitMessage, suggestedEmojis, project)
             }
         }
     }
