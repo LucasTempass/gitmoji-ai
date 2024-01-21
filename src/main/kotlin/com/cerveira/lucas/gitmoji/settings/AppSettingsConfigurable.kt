@@ -1,33 +1,34 @@
 package com.cerveira.lucas.gitmoji.settings
 
+import com.cerveira.lucas.gitmoji.bundle.Bundle.message
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 
-class AppSettingsConfigurable : BoundConfigurable("Gitmoji") {
+class AppSettingsConfigurable : BoundConfigurable(message("settings.title")) {
 
     private val apiKeyPasswordField = JBPasswordField()
 
     override fun createPanel() = panel {
         row {
-            label("OpenAI API Key").widthGroup("label")
+            label(message("settings.general.api-key")).widthGroup("label")
 
             with(cell(apiKeyPasswordField).bindText(
                 { AppSettings.instance.getToken().orEmpty() },
                 { AppSettings.instance.setToken(it) }
             ).align(Align.FILL)) {
-                component.emptyText.setText("sk-xxxxxxxxxxxxxxxxxxxxxx")
+                component.emptyText.setText(message("settings.general.api-key.placeholder"))
             }
         }
 
         row {
-            comment("You can get your OpenAI API key from <a href=\"https://beta.openai.com/account/api-keys\">the OpenAI API dashboard</a>.")
+            comment(message("settings.general.api-key.helper-text"))
         }
 
         row {
-            comment("This information is stored locally and is not shared with anyone.").bold()
+            comment(message("settings.general.api-key.disclaimer")).bold()
         }
     }
 
