@@ -1,6 +1,7 @@
 package com.cerveira.lucas.gitmoji.actions
 
 import com.aallam.openai.api.exception.OpenAIAPIException
+import com.cerveira.lucas.gitmoji.bundle.Bundle.message
 import com.cerveira.lucas.gitmoji.data.Gitmoji
 import com.cerveira.lucas.gitmoji.notifications.sendErrorNotification
 import com.cerveira.lucas.gitmoji.service.AIService
@@ -41,15 +42,15 @@ class GitmojiAIAction : AnAction() {
         val tooltip = HelpTooltip()
 
         val description = if (isTokenInvalid) {
-            "Configure your OpenAI API key in the settings to get emoji suggestions for your commit message"
+            message("actions.gitmoji.ai.description.invalid-token")
         } else if (isCommitMessageEmpty) {
-            "Write a commit message to get AI generated emoji suggestions"
+            message("actions.gitmoji.ai.description.empty-commit")
         } else {
-            "Get AI generated emoji suggestions for your commit message"
+            message("actions.gitmoji.ai.description")
         }
 
         e.presentation.putClientProperty(ActionButton.CUSTOM_HELP_TOOLTIP, tooltip.apply {
-            setTitle("Generate Gitmoji suggestions")
+            setTitle(message("actions.gitmoji.ai.title"))
             setDescription(description)
         })
     }
@@ -66,7 +67,7 @@ class GitmojiAIAction : AnAction() {
         project: Project, commitMessage: CommitMessage
     ) {
         runModalTask(
-            "Generating Emoji Suggestions", project
+            message("actions.gitmoji.ai.loading"), project
         ) {
             val openAIService = AIService.instance
 
@@ -85,8 +86,8 @@ class GitmojiAIAction : AnAction() {
 
                     // generic exception handling
                     sendErrorNotification(
-                        "There was an error generating the suggested emojis",
-                        "Please try again later or report the issue on GitHub.",
+                        message("actions.gitmoji.ai.error.title"),
+                        message("actions.gitmoji.ai.error.description"),
                         project,
                     )
 
@@ -107,32 +108,30 @@ class GitmojiAIAction : AnAction() {
     private fun handleOpenAIAPIException(e: OpenAIAPIException, project: Project) {
         when (e.statusCode) {
             401 -> sendErrorNotification(
-                "There was an error generating the suggested emojis",
-                "Update your OpenAI API key in the settings or check if it is properly configured.",
+                message("actions.gitmoji.ai.error.title"),
+                message("actions.gitmoji.ai.error.401.description"),
                 project
             )
 
             429 -> sendErrorNotification(
-                "There was an error generating the suggested emojis",
-                "The OpenAI API rate limit was exceeded, try again later or check your account settings.",
+                message("actions.gitmoji.ai.error.title"),
+                message("actions.gitmoji.ai.error.429.description"),
                 project
             )
 
             500 -> sendErrorNotification(
-                "There was an error generating the suggested emojis",
-                "The OpenAI API returned an internal server error, try again later or check your commit message.",
+                message("actions.gitmoji.ai.error.title"),
+                message("actions.gitmoji.ai.error.500.description"),
                 project
             )
 
             503 -> sendErrorNotification(
-                "OpenAI API service unavailable",
-                "The OpenAI API maybe unavailable, try again later.",
-                project
+                message("actions.gitmoji.ai.error.title"), message("actions.gitmoji.ai.error.503.description"), project
             )
 
             else -> sendErrorNotification(
-                "There was an error generating the suggested emojis",
-                "Please try again later or check your internet connection.",
+                message("actions.gitmoji.ai.error.title"),
+                message("actions.gitmoji.ai.error.unknown.description"),
                 project,
             )
         }

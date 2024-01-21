@@ -1,5 +1,6 @@
 package com.cerveira.lucas.gitmoji.actions
 
+import com.cerveira.lucas.gitmoji.bundle.Bundle.message
 import com.cerveira.lucas.gitmoji.data.gitmojis
 import com.cerveira.lucas.gitmoji.ui.EmojiSelectorPopup.Companion.displayEmojiSelectorPopup
 import com.intellij.ide.HelpTooltip
@@ -33,8 +34,8 @@ class GitmojiAction : AnAction() {
         val tooltip = HelpTooltip()
 
         e.presentation.putClientProperty(ActionButton.CUSTOM_HELP_TOOLTIP, tooltip.apply {
-            setTitle("Gitmoji")
-            setDescription("Select an emoji from the Gitmoji specification to add to your commit message")
+            setTitle(message("actions.gitmoji.title"))
+            setDescription(message("actions.gitmoji.description"))
         })
     }
 
