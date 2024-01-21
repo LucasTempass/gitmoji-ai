@@ -12,9 +12,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 class AppSettings : PersistentStateComponent<AppSettings> {
 
     private var openAIToken: String? = null
+    private var cache: MutableMap<String, List<Double>> = mutableMapOf()
 
     companion object {
-
         const val SERVICE_NAME = "com.cerveira.lucas.gitmoji.settings.com.cerveira.lucas.gitmoji.settings.AppSettings"
 
         val instance: AppSettings
@@ -34,6 +34,10 @@ class AppSettings : PersistentStateComponent<AppSettings> {
 
     fun getToken(): String? {
         return openAIToken
+    }
+
+    fun getCache(): MutableMap<String, List<Double>> {
+        return cache
     }
 
 }
