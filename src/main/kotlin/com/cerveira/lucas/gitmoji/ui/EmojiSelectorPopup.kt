@@ -7,10 +7,12 @@ import com.intellij.openapi.editor.colors.EditorFontType
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopup
 import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.openapi.ui.popup.JBPopupListener
+import com.intellij.openapi.ui.popup.LightweightWindowEvent
 import com.intellij.openapi.vcs.ui.CommitMessage
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.ObjectUtils.sentinel
-import com.intellij.util.ui.JBUI
+import com.intellij.util.ui.JBUI.scale
 import java.awt.Point
 import javax.swing.ListSelectionModel
 
@@ -20,10 +22,8 @@ class EmojiSelectorPopup {
         fun displayEmojiSelectorPopup(
             commitMessage: CommitMessage, gitmojisOptions: List<Gitmoji>, project: Project
         ) {
-            createPopup(commitMessage, gitmojisOptions, project).show(
-                RelativePoint(
-                    commitMessage.editorField, Point(0, JBUI.scale(8))
-                )
+            createPopup(commitMessage, gitmojisOptions, project).showInBestPositionFor(
+                commitMessage.editorField.editor!!
             )
         }
 
@@ -38,6 +38,20 @@ class EmojiSelectorPopup {
                 .setRenderer(GitmojiColoredListCellRenderer())
                 .setNamerForFiltering { "${it.code} ${it.description}" }
                 .setAutoPackHeightOnFiltering(false)
+                .addListener(
+                    object : JBPopupListener {
+                        override fun beforeShown(event: LightweightWindowEvent) {
+                            val popup = event.asPopup()
+
+                            val relativePoint = RelativePoint(commitMessage.editorField, Point(0, -scale(3)))
+
+                            val screenPoint =
+                                Point(relativePoint.screenPoint).apply { translate(0, -popup.size.height) }
+
+                            popup.setLocation(screenPoint)
+                        }
+                    }
+                )
 
             return builder.createPopup()
         }
