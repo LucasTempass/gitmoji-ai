@@ -27,8 +27,6 @@
             <li>Based on the embeddings API from OpenAI, which results in a more accurate and cheaper suggestions.</li>
         </ul>
 
-        <!-- TODO insert image -->
-
         <p>
             This plugin relies on the OpenAI API, therefore you need to have an OpenAI API key to use it. You can get
             one for free at <a href="https://platform.openai.com/docs/introduction">the OpenAI platform</a>.
