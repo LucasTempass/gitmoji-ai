@@ -115,6 +115,12 @@ class GitmojiAIAction : AnAction() {
 
     private fun handleOpenAIAPIException(e: OpenAIAPIException, project: Project) {
         when (e.statusCode) {
+            400 -> sendErrorNotification(
+                message("actions.gitmoji.ai.error.400.title"),
+                message("actions.gitmoji.ai.error.400.description"),
+                project
+            )
+
             401 -> sendErrorNotification(
                 message("actions.gitmoji.ai.error.title"),
                 message("actions.gitmoji.ai.error.401.description"),
