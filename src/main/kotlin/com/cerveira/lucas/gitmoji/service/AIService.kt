@@ -45,9 +45,12 @@ class AIService {
         val currentAppliedGitmoji = gitmojis.firstOrNull { message.contains(it.value) }
 
         // removes applied emoji to compare with cached embeddings and avoid bias
-        val cleanedMessage = currentAppliedGitmoji?.let {
+        val parsedMessage = currentAppliedGitmoji?.let {
             message.replace(it.value, "")
         } ?: message
+
+        // removes whitespaces to standardize message
+        val cleanedMessage = parsedMessage.trim()
 
         if (cache.containsKey(cleanedMessage)) {
             return cache[cleanedMessage]!!
