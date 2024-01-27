@@ -45,7 +45,7 @@
                 text="Gitmoji"
                 description="Select a gitmoji and get a commit message suggestion"
                 class="com.cerveira.lucas.gitmoji.actions.GitmojiAction"
-                icon="/icons/gitmoji.svg"
+                icon="/icons/yellow-action.svg"
         >
             <add-to-group group-id="Vcs.MessageActionGroup" anchor="last"/>
         </action>
@@ -55,7 +55,7 @@
                 text="Gitmoji: With AI Suggestions"
                 description="Select a gitmoji and get a commit message suggestion"
                 class="com.cerveira.lucas.gitmoji.actions.GitmojiAIAction"
-                icon="/icons/gitmoji.svg"
+                icon="/icons/blue-action.svg"
         >
             <add-to-group group-id="Vcs.MessageActionGroup" anchor="last"/>
         </action>
