@@ -13,6 +13,7 @@ class AppSettings : PersistentStateComponent<AppSettings> {
 
     private var openAIToken: String? = null
     private var cache: MutableMap<String, List<Double>> = mutableMapOf()
+    private var isInsertEmoji: Boolean = true
 
     companion object {
         const val SERVICE_NAME = "com.cerveira.lucas.gitmoji.settings.com.cerveira.lucas.gitmoji.settings.AppSettings"
@@ -38,6 +39,15 @@ class AppSettings : PersistentStateComponent<AppSettings> {
 
     fun getCache(): MutableMap<String, List<Double>> {
         return cache
+    }
+
+    fun isInsertEmoji(): Boolean {
+        return isInsertEmoji
+    }
+
+    fun setInsertEmoji(isEmoji: Boolean) {
+        // TODO update on Settings panel
+        this.isInsertEmoji = isEmoji
     }
 
 }

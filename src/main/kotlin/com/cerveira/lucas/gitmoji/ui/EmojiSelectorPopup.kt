@@ -2,6 +2,7 @@ package com.cerveira.lucas.gitmoji.ui
 
 import com.cerveira.lucas.gitmoji.data.Gitmoji
 import com.cerveira.lucas.gitmoji.data.gitmojis
+import com.cerveira.lucas.gitmoji.settings.AppSettings
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.editor.colors.EditorFontType
 import com.intellij.openapi.project.Project
@@ -67,16 +68,28 @@ class EmojiSelectorPopup {
         ) {
             val currentMessage = commitMessage.editorField.text
 
+            val isInsertingEmoji = AppSettings.instance.isInsertEmoji()
+
+            // centralize value extraction to avoid duplication
+            val valueExtractor: (Gitmoji) -> String = { g: Gitmoji ->
+                if (isInsertingEmoji) {
+                    g.value
+                } else {
+                    g.code
+                }
+            }
+
             val suffix = " "
 
-            val textToInsert = "${gitmoji.value}$suffix"
+            val textToInsert = "${valueExtractor(gitmoji)}$suffix"
 
-            val currentAppliedGitmoji = gitmojis.firstOrNull { currentMessage.contains(it.value) }
+            val currentAppliedGitmoji: Gitmoji? = gitmojis.firstOrNull { currentMessage.contains(valueExtractor(it)) }
 
-            val message = when (currentAppliedGitmoji) {
+            val message: String = when (currentAppliedGitmoji) {
                 null -> textToInsert + currentMessage
                 else -> currentMessage.replaceFirst(
-                    currentAppliedGitmoji.value, gitmoji.value
+                    valueExtractor(currentAppliedGitmoji),
+                    valueExtractor(gitmoji)
                 )
             }
 
