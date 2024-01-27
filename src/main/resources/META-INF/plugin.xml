@@ -7,16 +7,40 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>Gitmoji AI</name>
 
-    <!-- TODO A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+    <vendor url="https://github.com/LucasTempass">
+       Lucas T. Cerveira
+    </vendor>
 
-    <!--  TODO Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+    <!--  Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-  ]]></description>
+        <p><b>Seamlessly integrate the Gitmoji convention into your workflow.</b></p>
+
+        <p>
+            Select a Gitmoji and insert it directly into your commit message or <b>get AI generated emoji
+            suggestions without leaving your IDE.</b>
+        </p>
+        <ul>
+            <li>Optimized OpenAI API integration and local caching.</li>
+            <li>Search for emojis by name or description.</li>
+            <li>Based on the embeddings API from OpenAI, which results in a more accurate and cheaper suggestions.</li>
+        </ul>
+
+        <!-- TODO insert image -->
+
+        <p>
+            This plugin relies on the OpenAI API, therefore you need to have an OpenAI API key to use it. You can get
+            one for free at <a href="https://platform.openai.com/docs/introduction">the OpenAI platform</a>.
+            <b>This information is stored locally on your IDE and is not shared with anyone.</b>
+        </p>
+
+        <p>
+            <i>Disclaimer:</i> This plugin is not affiliated with the Gitmoji project or OpenAI. This is an open source
+            personal project. Feel free to contribute and improve it at <a
+                href="https://github.com/LucasTempass/gitmoji-ai">Github</a>.
+        </p>
+        ]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
