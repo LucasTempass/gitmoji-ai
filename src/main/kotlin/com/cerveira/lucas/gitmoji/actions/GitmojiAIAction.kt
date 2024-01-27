@@ -17,11 +17,17 @@ import com.intellij.openapi.progress.runModalTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vcs.VcsDataKeys
 import com.intellij.openapi.vcs.ui.CommitMessage
+import com.intellij.ui.IconManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import javax.swing.Icon
 
 
 class GitmojiAIAction : AnAction() {
+
+    val disabledIcon: Icon = IconManager.getInstance().getIcon(
+        "/icons/blue-action-disabled.svg", this::class.java
+    )
 
     override fun getActionUpdateThread(): ActionUpdateThread {
         return ActionUpdateThread.BGT
@@ -36,8 +42,7 @@ class GitmojiAIAction : AnAction() {
 
         val isCommitMessageEmpty: Boolean = getCommitMessage(e)?.text?.isEmpty() ?: true
 
-        e.presentation.isEnabled = !isCommitMessageEmpty && !isTokenInvalid
-        e.presentation.isVisible = project != null
+        e.presentation.isEnabled = !isCommitMessageEmpty && !isTokenInvalid && project != null
 
         val tooltip = HelpTooltip()
 
@@ -53,7 +58,10 @@ class GitmojiAIAction : AnAction() {
             setTitle(message("actions.gitmoji.ai.title"))
             setDescription(description)
         })
+
+        e.presentation.disabledIcon = disabledIcon
     }
+
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.project ?: return
