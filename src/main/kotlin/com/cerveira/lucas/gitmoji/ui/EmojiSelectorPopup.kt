@@ -88,11 +88,7 @@ class EmojiSelectorPopup {
         private fun extractProperty(gitmoji: Gitmoji): String {
             val property = AppSettings.instance.getGitmojiProperty();
 
-            return when (property) {
-                AppSettings.GitmojiProperty.EMOJI -> gitmoji.value
-                AppSettings.GitmojiProperty.NAME -> gitmoji.name
-                AppSettings.GitmojiProperty.CODE -> gitmoji.code
-            }
+            return property.extractor.apply(gitmoji)
         }
     }
 

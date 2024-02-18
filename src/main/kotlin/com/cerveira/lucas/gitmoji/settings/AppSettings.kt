@@ -1,18 +1,22 @@
 package com.cerveira.lucas.gitmoji.settings
 
+import com.cerveira.lucas.gitmoji.data.Gitmoji
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
+import java.util.function.Function
 
 @State(
     name = AppSettings.SERVICE_NAME, storages = [Storage("GitmojiAI.xml")]
 )
 class AppSettings : PersistentStateComponent<AppSettings> {
 
-    enum class GitmojiProperty {
-        EMOJI, CODE, NAME
+    enum class GitmojiProperty(val extractor: Function<Gitmoji, String>) {
+        EMOJI(Gitmoji::value),
+        CODE(Gitmoji::code),
+        NAME(Gitmoji::name);
     }
 
     private var openAIToken: String? = null
