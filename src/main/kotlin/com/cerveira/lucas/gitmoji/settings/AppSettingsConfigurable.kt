@@ -4,8 +4,11 @@ import com.cerveira.lucas.gitmoji.bundle.Bundle.message
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.ui.components.JBPasswordField
 import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.ComponentWithEmptyText
+import javax.swing.JComponent
 
 class AppSettingsConfigurable : BoundConfigurable(message("settings.title")) {
 
@@ -15,12 +18,14 @@ class AppSettingsConfigurable : BoundConfigurable(message("settings.title")) {
         row {
             label(message("settings.general.api-key")).widthGroup("label")
 
-            with(cell(apiKeyPasswordField).bindText(
-                { AppSettings.instance.getToken().orEmpty() },
-                { AppSettings.instance.setToken(it) }
-            ).align(Align.FILL)) {
-                component.emptyText.setText(message("settings.general.api-key.placeholder"))
-            }
+            cell(apiKeyPasswordField)
+                .bindText(
+                    { AppSettings.instance.getToken().orEmpty() },
+                    { AppSettings.instance.setToken(it) }
+                )
+                .placeholder(message("settings.general.api-key.placeholder"))
+                .align(Align.FILL)
+
         }
 
         row {
@@ -32,4 +37,9 @@ class AppSettingsConfigurable : BoundConfigurable(message("settings.title")) {
         }
     }
 
+}
+
+fun <T> Cell<T>.placeholder(placeholder: String): Cell<T> where T : JComponent, T : ComponentWithEmptyText {
+    this.component.emptyText.text = placeholder
+    return this
 }
