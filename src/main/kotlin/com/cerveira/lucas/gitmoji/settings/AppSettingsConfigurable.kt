@@ -15,25 +15,32 @@ class AppSettingsConfigurable : BoundConfigurable(message("settings.title")) {
     private val apiKeyPasswordField = JBPasswordField()
 
     override fun createPanel() = panel {
-        row {
-            label(message("settings.general.api-key")).widthGroup("label")
+        group("OpenAI") {
+            row {
+                label(message("settings.general.api-key")).widthGroup("label")
 
-            cell(apiKeyPasswordField)
-                .bindText(
-                    { AppSettings.instance.getToken().orEmpty() },
-                    { AppSettings.instance.setToken(it) }
-                )
-                .placeholder(message("settings.general.api-key.placeholder"))
-                .align(Align.FILL)
+                cell(apiKeyPasswordField)
+                    .bindText(
+                        { AppSettings.instance.getToken().orEmpty() },
+                        { AppSettings.instance.setToken(it) }
+                    )
+                    .placeholder(message("settings.general.api-key.placeholder"))
+                    .align(Align.FILL)
 
+            }
+
+            row {
+                comment(message("settings.general.api-key.helper-text"))
+            }
+
+            row {
+                comment(message("settings.general.api-key.disclaimer")).bold()
+            }
         }
+        group("Usage") {
 
-        row {
-            comment(message("settings.general.api-key.helper-text"))
-        }
 
-        row {
-            comment(message("settings.general.api-key.disclaimer")).bold()
+
         }
     }
 
