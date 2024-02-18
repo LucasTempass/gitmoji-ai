@@ -11,7 +11,12 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 )
 class AppSettings : PersistentStateComponent<AppSettings> {
 
+    enum class GitmojiProperty {
+        EMOJI, CODE, NAME
+    }
+
     private var openAIToken: String? = null
+    private var gitmojiProperty: GitmojiProperty = GitmojiProperty.EMOJI
     private var cache: MutableMap<String, List<Double>> = mutableMapOf()
 
     companion object {
@@ -38,6 +43,15 @@ class AppSettings : PersistentStateComponent<AppSettings> {
 
     fun getCache(): MutableMap<String, List<Double>> {
         return cache
+    }
+
+    fun getGitmojiProperty(): GitmojiProperty {
+        return gitmojiProperty
+    }
+
+    fun setGitmojiProperty(gitmojiProperty: GitmojiProperty?) {
+        // EMOJI is the default value
+        this.gitmojiProperty = gitmojiProperty ?: GitmojiProperty.EMOJI
     }
 
 }
