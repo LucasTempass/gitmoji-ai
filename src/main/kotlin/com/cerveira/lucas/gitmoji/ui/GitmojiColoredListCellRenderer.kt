@@ -3,7 +3,6 @@ package com.cerveira.lucas.gitmoji.ui
 import com.cerveira.lucas.gitmoji.data.Gitmoji
 import com.intellij.ui.ColoredListCellRenderer
 import com.intellij.ui.SimpleTextAttributes
-import com.intellij.ui.speedSearch.SpeedSearchUtil
 import com.intellij.ui.speedSearch.SpeedSearchUtil.applySpeedSearchHighlighting
 import javax.swing.JList
 
